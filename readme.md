@@ -7,7 +7,7 @@
 
 ```html
 <body>
-  <script src='./inhtml.js'>
+  <script src='https://unpkg.com/inhtml'>
     //must be loaded first
   </script>
 	<table>

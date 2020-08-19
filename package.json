@@ -1,7 +1,8 @@
 {
   "name": "inhtml",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./inhtml.js",
+  "files": ["./inhtml.js", "./min/*"],
   "description": "yet another small DOM component library",
   "keywords": [
     "html",
@@ -13,11 +14,12 @@
   "dependencies": {},
   "devDependencies": {
     "assert-op": "^0.5.1",
-    "jsdom": "^16.4.0"
+    "jsdom": "^16.4.0",
+    "terser": "^5.2.0"
   },
   "scripts": {
-    "test": "node ./tst/el & node ./tst/svg & node ./tst/list & node ./tst/css & node ./tst/find",
-    "prepublishOnly": "npm test"
+    "test": "",
+    "prepublishOnly": "terser inhtml.js -c -m --source-map -o ./min/index.min.js"
   },
   "repository": {
     "type": "git",
