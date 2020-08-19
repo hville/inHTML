@@ -1,0 +1,28 @@
+{
+  "name": "inhtml",
+  "version": "0.1.0",
+  "main": "./inhtml.js",
+  "description": "yet another small DOM component library",
+  "keywords": [
+    "html",
+    "template",
+    "dom",
+    "browser"
+  ],
+  "author": "Hugo Villeneuve",
+  "dependencies": {},
+  "devDependencies": {
+    "assert-op": "^0.5.1",
+    "jsdom": "^16.4.0"
+  },
+  "scripts": {
+    "test": "node ./tst/el & node ./tst/svg & node ./tst/list & node ./tst/css & node ./tst/find",
+    "prepublishOnly": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hville/inHTML.git"
+  },
+  "private": false,
+  "license": "MIT"
+}

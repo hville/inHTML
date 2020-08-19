@@ -1,0 +1,9 @@
+{
+  "extends": "c:/seafile/eslint-common.json",
+  "env": {
+    "browser": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 7
+  }
+}
