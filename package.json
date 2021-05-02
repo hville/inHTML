@@ -1,25 +1,15 @@
 {
-  "name": "inhtml",
-  "version": "0.1.1",
-  "main": "./inhtml.js",
-  "files": ["./inhtml.js", "./min/*"],
-  "description": "yet another small DOM component library",
-  "keywords": [
-    "html",
-    "template",
-    "dom",
-    "browser"
-  ],
+  "name": "@hugov/inhtml",
+  "type": "module",
+  "version": "0.2.0",
+  "description": "small and simple in-html templates, factories and dynamic lists",
+  "keywords": ["html", "template", "dom", "browser", "dynamic", "keyed", "list"],
   "author": "Hugo Villeneuve",
   "dependencies": {},
-  "devDependencies": {
-    "assert-op": "^0.5.1",
-    "jsdom": "^16.4.0",
-    "terser": "^5.2.0"
-  },
+  "devDependencies": {},
   "scripts": {
-    "test": "",
-    "prepublishOnly": "terser inhtml.js -c -m --source-map -o ./min/index.min.js"
+    "test": "snowpack dev",
+    "pub": "npm publish --access public"
   },
   "repository": {
     "type": "git",

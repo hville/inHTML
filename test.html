@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src='https://unpkg.com/inhtml'>//./inhtml.js</script>
 <meta charset="utf-8"/>
 <title>inHTML</title>
 </head>
@@ -9,45 +8,30 @@
 <div>
 	<table>
 		<tbody>
-			<template>
-				<tr id=row>
-					<td id=id></td>
-					<td id=select>
-						<a id=label></a>
-					</td>
-					<td id=del>
-						<a class=remove>
-							<span aria-hidden=true></span>
-						</a>
-					</td>
-					<td></td>
-				</tr>
-			</template>
 		</tbody>
-		<script>
-			inHTML( function(tbody, {row}) {
-				function updateRow(v) {
-					this.refs.label.textContent = v.ms
-				}
-				function makeRow(data) {
-					const el = inHTML.clone(row),
-								{id, select, label, del} = el.refs
-					id.textContent = data.id
-					label.textContent = data.ms
-					el.update = updateRow
-					return el
-				}
-				const rows = inHTML.list(tbody, v=>v.id, makeRow)
-				inHTML.update = rows.update.bind(rows)
-			})
-		</script>
 	</table>
 </div>
 </body>
-<script>
-	inHTML.data = [ {id:'1', ms:'one'} ]
-	inHTML.update(inHTML.data)
-	inHTML.data.push( {id:'2', ms:'two'} )
-	inHTML.update(inHTML.data)
+<template>
+	<tr :id=row>
+		<td :id=id></td>
+		<td>
+			<a :id=label></a>
+		</td>
+	</tr>
+</template>
+<script type=module>
+	import {cast, list, $, $$, $ids} from '/index.js'
+	const makeRow = cast('template', (ids,v,k) => {
+		ids.label.textContent = v.ms
+		ids.id.textContent = v.id
+		ids.row.update = v => ids.label.textContent = v.ms
+		return ids.row
+	})
+	const tbody = list($('tbody'), makeRow)
+	const data = [ {id:'1', ms:'one'} ]
+	tbody.update(data)
+	data.push( {id:'2', ms:'two'} )
+	tbody.update(data)
 </script>
 </html>
