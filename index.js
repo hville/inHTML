@@ -67,6 +67,7 @@ export function list(parent, factory, { getKey, after=null, before=null }={} ) {
 	return parent
 }
 
+//TODO not tested or documented
 const DELEGATES = {}
 export function delegate(eventType) {
 	if (!DELEGATES[eventType]) {
@@ -79,4 +80,20 @@ function listener(event) {
 			evt = DELEGATES[event.type]
 	do if (tgt[evt]) return tgt[evt](e)
 	while(tgt = tgt.parentNode)
+}
+
+//TODO not tested or documented
+const ISMOD = /^[\s]*import[\s'"`*{;]/
+export function frame(func, init='', attributes=ISMOD.test(init) ? 'type=module' : '') {
+	const frm = D.createElement('iframe')
+	frm.hidden = true
+	frm.sandbox = 'allow-scripts allow-same-origin'
+	frm.srcdoc = /*html*/`<script ${ attributes }>${''+init}; window.framedFunction=${''+func}</script>`
+	const framed = new Promise( (p, f) => {
+		frm.onload = () => p(frm.contentWindow.framedFunction.bind(frm.contentWindow))
+		frm.onerror = f
+	})
+	D.body.appendChild(frm)
+
+	return async (...args) => (await framed)(...args)
 }
