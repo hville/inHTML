@@ -88,7 +88,7 @@ export function frame(func, init='', attributes=ISMOD.test(init) ? 'type=module'
 	const frm = D.createElement('iframe')
 	frm.hidden = true
 	frm.sandbox = 'allow-scripts allow-same-origin'
-	frm.srcdoc = /*html*/`<script ${ attributes }>${''+init}; window.framedFunction=${''+func}</script>`
+	frm.srcdoc = `<script ${ attributes }>${''+init}; window.framedFunction=${''+func}<\/script>` //escape closing tag for html inserts
 	const framed = new Promise( (p, f) => {
 		frm.onload = () => p(frm.contentWindow.framedFunction.bind(frm.contentWindow))
 		frm.onerror = f
