@@ -1,7 +1,8 @@
 {
   "name": "@hugov/inhtml",
   "type": "module",
-  "version": "0.2.2",
+  "main": "index.js",
+  "version": "0.2.3",
   "description": "small and simple in-html templates, factories and dynamic lists",
   "keywords": ["html", "template", "dom", "browser", "dynamic", "keyed", "list"],
   "author": "Hugo Villeneuve",
