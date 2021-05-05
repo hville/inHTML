@@ -8,9 +8,9 @@
 ```html
 <table><tbody></tbody></table>
 <template>
-	<tr :id=row>
-		<td :id=cell></td>
-		<td><a :id=label></a></td>
+	<tr id=row>
+		<td id=cell></td>
+		<td><a id=label></a></td>
 	</tr>
 </template>
 <script type=module>
@@ -32,7 +32,7 @@
 ## Features
 
 * template inside html markup
-* no new html constructs except for the `:id` custom attribute that is stripped when processed
+* no new html constructs. `id` attributes inside the template are stripped and passed on as reference to the decorator function
 * template can be a `<template>` element or any other node
 * template is cloned, never modified
 * multiple dynamic lists within the same parent

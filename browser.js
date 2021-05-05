@@ -1,5 +1,5 @@
 const D = document,
-			ID = ':id'
+			ID = 'id'
 export const TW = D.createTreeWalker(D, 1)
 export const $ = (sel, elm) => (elm || D).querySelector(sel)
 export const $$ = (sel, elm) => (elm || D).querySelectorAll(sel)
