@@ -95,5 +95,8 @@ export function frame(func, init='', attributes=ISMOD.test(init) ? 'type=module'
 	})
 	D.body.appendChild(frm)
 
-	return async (...args) => (await framed)(...args)
+	return {
+		run: async (...args) => (await framed)(...args),
+		end: () => void frm.remove()
+	}
 }

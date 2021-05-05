@@ -1,15 +1,14 @@
 {
   "name": "@hugov/inhtml",
   "type": "module",
-  "main": "index.js",
-  "version": "0.2.3",
+  "browser": "browser.js",
+  "version": "0.3.0",
   "description": "small and simple in-html templates, factories and dynamic lists",
   "keywords": ["html", "template", "dom", "browser", "dynamic", "keyed", "list"],
   "author": "Hugo Villeneuve",
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
-    "test": "snowpack dev",
     "pub": "npm publish --access public"
   },
   "repository": {

@@ -21,7 +21,7 @@
 	</tr>
 </template>
 <script type=module>
-	import {cast, list, $, $$, $ids} from '/index.js'
+	import {cast, list, $, $$, $ids, frame} from './browser.js'
 	const makeRow = cast('template', (ids,v,k) => {
 		ids.label.textContent = v.ms
 		ids.id.textContent = v.id
@@ -33,5 +33,7 @@
 	tbody.update(data)
 	data.push( {id:'2', ms:'two'} )
 	tbody.update(data)
+	const squareSandbox = frame('x=>x*x')
+	squareSandbox.run(2).then( v => tbody.append('isFour:', v) )
 </script>
 </html>
