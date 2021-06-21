@@ -1,5 +1,17 @@
+/*
+TODO
+	tests
+TODO
+  https://html.spec.whatwg.org/multipage/named-characters.html#named-character-references
+	&	=> &amp;
+  <	=> &lt;
+  > => &gt;
+  " =>  &quot;
+*/
+
 const D = document,
 			ID = 'id'
+
 export const TW = D.createTreeWalker(D, 1)
 export const $ = (sel, elm) => (elm || D).querySelector(sel)
 export const $$ = (sel, elm) => (elm || D).querySelectorAll(sel)
@@ -15,7 +27,7 @@ export function $ids(el) {
 }
 
 export function cast(template, decorator) {
-	if (!template.nodeType) template = $(template)
+	template = template.nodeName ? template : template[0] === '<' ? html(template) : $(template)
 	if (template.nodeName === 'TEMPLATE') template = template.content
 
 	return function(v,k) {
@@ -23,6 +35,12 @@ export function cast(template, decorator) {
 		const res = decorator.call(this, $ids(el), v, k)
 		return res?.nodeType ? res : el
 	}
+}
+
+export function html(base, ...args) {
+	const T = D.createElement('template')
+	T.innerHTML = typeof base === 'string' ? base : String.raw(base, ...args)
+	return T.content
 }
 
 export function list(parent, factory, { getKey, after=null, before=null }={} ) {
@@ -72,7 +90,7 @@ const DELEGATES = {}
 export function delegate(eventType) {
 	if (!DELEGATES[eventType]) {
 		DELEGATES[eventType] = 'on' + eventType[0].toUpperCase() + eventType.slice(1)
-		document.addEventListener(eventType, listener)
+		D.addEventListener(eventType, listener)
 	}
 }
 function listener(event) {

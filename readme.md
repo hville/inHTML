@@ -14,7 +14,7 @@
 	</tr>
 </template>
 <script type=module>
-	import {cast, list} from '/index.js'
+	import {cast, list} from '@hugov/inhtml'
 	const makeRow = cast('template', ({row, cell, label},v,k) => {
 		label.textContent = v.ms
 		cell.textContent = v.id
