@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>inHTML</title>
+</head>
+<body>
+<div>
+	<table>
+		<tbody id=first>
+		</tbody>
+	</table>
+	<table>
+		<tbody id=second>
+			<tr id=row>
+				<td id=id></td>
+				<td>
+					<a id=label></a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+<template>
+	<tr id=row>
+		<td id=id></td>
+		<td>
+			<a id=label></a>
+		</td>
+	</tr>
+</template>
+<script type=module>
+	import {tag, cast, list, $, $$, $ids, frame} from './browser.js'
+	const makeRow1 = cast('template', (ids,v,k) => {
+		console.log('ids1', ids)
+		ids.label.textContent = v.ms
+		ids.id.textContent = v.id
+		ids.row.update = v => ids.label.textContent = v.ms
+		return ids.row
+	})
+	const makeRow2 = cast('#row', (ids,v,k) => {
+		console.log('ids2', ids)
+		ids.label.textContent = v.ms
+		ids.id.textContent = v.id
+		ids.row.update = v => ids.label.textContent = v.ms
+		return ids.row
+	})
+	const tbody1 = list($('tbody'), makeRow1),
+				tbody2 = list($`#second`, makeRow2)
+
+	const data = [ {id:'1', ms:'one'} ]
+	tbody1.update(data)
+	tbody2.update(data)
+	data.push( {id:'2', ms:'two'} )
+	tbody1.update(data)
+	tbody2.update(data)
+	const squareSandbox = frame('x=>x*x')
+	squareSandbox.run(2).then( v => $`body`.append(tag`isFour: ${v}`) )
+</script>
+</html>

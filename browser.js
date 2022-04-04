@@ -1,6 +1,6 @@
 /*
 TODO
-	tests
+	documentation
 TODO
   https://html.spec.whatwg.org/multipage/named-characters.html#named-character-references
 	&	=> &amp;
@@ -9,53 +9,63 @@ TODO
   " =>  &quot;
 */
 
-const D = document,
-			ID = 'id'
+const D = document
 
-export const TW = D.createTreeWalker(D, 1)
-export const $ = (sel, elm) => (elm || D).querySelector(sel)
-export const $$ = (sel, elm) => (elm || D).querySelectorAll(sel)
+export function tag(strings) {
+	let t = strings[0]
+	for (let i=1; i<arguments.length; ++i) t += arguments[i] + strings[i]
+	return t
+}
+
+export function $(sel, elm) {
+	return Array.isArray(sel) ? D.querySelector(tag.apply(null, arguments)) : (elm || D).querySelector(sel)
+}
+
+export function $$(sel, elm) {
+	return Array.isArray(sel) ? D.querySelectorAll(tag.apply(null, arguments)) : (elm || D).querySelectorAll(sel)
+}
+
+export function html(txt) {
+	const T = D.createElement('template')
+	T.innerHTML = Array.isArray(txt) ? tag.apply(null, arguments) : txt
+	return T.content
+}
+
+function getNode(selection) {
+	const node = selection.nodeName ? selection : selection[0] === '<' ? html(selection) : $(selection)
+	return node.content || node
+}
 
 export function $ids(el) {
-	let spot = TW.currentNode = el
-	const next = el.nextSibling?.() || null,
-				ids = Object.create(null)
-	while ( (spot = TW.nextNode()) !== next)
-		if (spot.hasAttribute(ID))
-			(ids[spot.getAttribute(ID)] = spot).removeAttribute(ID)
+	const ids = Object.create(null)
+	if (el.id) (ids[el.id] = el).removeAttribute('id')
+	for (const kid of el.querySelectorAll('[id]')) (ids[kid.id] = kid).removeAttribute('id')
 	return ids
 }
 
 export function cast(template, decorator) {
-	template = template.nodeName ? template : template[0] === '<' ? html(template) : $(template)
-	if (template.nodeName === 'TEMPLATE') template = template.content
+	const model = getNode(template)
 
 	return function(v,k) {
-		const el = template.cloneNode(true)
-		const res = decorator.call(this, $ids(el), v, k)
+		const el = model.cloneNode(true),
+					res = decorator.call(this, $ids(el), v, k)
 		return res?.nodeType ? res : el
 	}
 }
 
-export function html(base, ...args) {
-	const T = D.createElement('template')
-	T.innerHTML = typeof base === 'string' ? base : String.raw(base, ...args)
-	return T.content
-}
-
 export function list(parent, factory, { getKey, after=null, before=null }={} ) {
-	if (!parent.nodeType) parent = $(parent)
+	const kin = getNode(parent)
 
 	let last = Object.create(null),
-			updater = parent.update
+			updater = kin.update
 
-	parent.update = !updater ? updateList
+	kin.update = !updater ? updateList
 		: function(...args) { updateList.call(this, ...args); updater.call(this, ...args) }
 
 	function updateList(arr) {
 		const kids = Object.create(null)
-		let spot = after ? after.nextSibling : parent.firstChild
-		if (!arr.length && !before && !after) parent.textContent = ''
+		let spot = after ? after.nextSibling : kin.firstChild
+		if (!arr.length && !before && !after) kin.textContent = ''
 		else {
 			for (let i = 0; i < arr.length; ++i) {
 				const key = getKey?.(arr[i], i, arr) || i
@@ -66,15 +76,15 @@ export function list(parent, factory, { getKey, after=null, before=null }={} ) {
 				kids[key] = kid
 
 				//place kid
-				if (!spot) parent.appendChild(kid)
-				else if (kid === spot.nextSibling) parent.removeChild(spot)
-				else if (kid !== spot) parent.insertBefore(kid, spot)
+				if (!spot) kin.appendChild(kid)
+				else if (kid === spot.nextSibling) kin.removeChild(spot)
+				else if (kid !== spot) kin.insertBefore(kid, spot)
 				spot = kid.nextSibling
 			}
 			//delete remaining
 			while (spot !== before) {
 				const next = spot.nextSibling
-				parent.removeChild(spot)
+				kin.removeChild(spot)
 				spot = next
 			}
 		}
@@ -82,9 +92,10 @@ export function list(parent, factory, { getKey, after=null, before=null }={} ) {
 		return this
 	}
 
-	return parent
+	return kin
 }
 
+//EVENT DELEGATION
 //TODO not tested or documented
 const DELEGATES = {}
 export function delegate(eventType) {
@@ -100,7 +111,7 @@ function listener(event) {
 	while(tgt = tgt.parentNode)
 }
 
-//TODO not tested or documented
+//TODO not documented
 const ISMOD = /^[\s]*import[\s'"`*{;]/
 export function frame(func, init='', attributes=ISMOD.test(init) ? 'type=module' : '') {
 	const frm = D.createElement('iframe')
