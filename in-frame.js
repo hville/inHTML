@@ -10,9 +10,9 @@ export function frame(code, init='', attributes=ISMOD.test(init) ? 'type=module'
 	// complicate access to the parent window:
 	}>Object.defineProperties(window,{parent:{value:window},frameElement:{value:null}});${
 		init
-	};dispatchEvent(new CustomEvent('resolve', {detail:${
+	};dispatchEvent(new CustomEvent('resolve',{detail:(${
 		code
-	}}))<\/script>`
+	}).bind(this)}))<\/script>`
 
 	// get the evaluated code
 	const framed = Promise.all([
@@ -21,9 +21,10 @@ export function frame(code, init='', attributes=ISMOD.test(init) ? 'type=module'
 			iframeEl.onerror = f
 		} ),
 		new Promise( (p,f)=>{
-			document.body.appendChild(iframeEl).contentWindow.addEventListener('resolve',
-				e => p(e.detail?.bind?.(e.target) || e.detail), {once:true, passive:true}
-			)
+			document.body.appendChild(iframeEl).contentWindow.addEventListener('resolve', e => {
+				if (typeof e.detail === 'function') p(e.detail)
+				else f(new Error('not a function'))
+			}, {once:true, passive:true})
 		})
 	])
 	framed.finally( () => iframeEl.remove() )
