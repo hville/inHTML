@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head></head>
+
+<script type=module>
+	import {frame} from './browser.js'
+	const plain = await frame(`x=>x+2`),
+				closure = await frame(`x=>x+y`, `const y=2`),
+				global = await frame(`x=>x+y`, `window.y=2`),
+				this_ = await frame(`function(x) { return x+this.y }`, `window.y=2`),
+				dom = await frame(`x => +document.body.textContent+x`, `onload = () => document.body.textContent=2`),
+				obj = await frame(`{x: x => x+o.y }`, `const o={y:2}`),
+				batshit = await frame(`async x => (await ff)(x)`, `import {frame} from './in-frame.js';
+				const ff = frame('x=>x+2')`)
+
+	async function test(msg,f,arg) {
+		//f.catch(e => console.log('!',e))
+		document.body.append(msg, await f(arg))
+	}
+
+	test('plain', plain, 1)
+	test('closure', closure, 1)
+	test('global', global, 1)
+	test('this_', this_, 1)
+	test('dom', dom, 1)
+	test('obj', obj.x, 1)
+	test('batshit', await batshit, 1)
+</script>
+</html>

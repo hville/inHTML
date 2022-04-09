@@ -34,7 +34,7 @@
 * template inside html markup
 * no new html constructs. `id` attributes inside the template are stripped and passed on as reference to the decorator function
 * template can be a `<template>` element or any other node
-* template is cloned, never modified
+* template is cloned, never modified, id attributes are used as references
 * multiple dynamic lists within the same parent
 
 ## Limitations

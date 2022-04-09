@@ -31,7 +31,7 @@
 	</tr>
 </template>
 <script type=module>
-	import {tag, cast, list, $, $$, $ids, frame} from './browser.js'
+	import {tag, cast, list, $, $$} from './browser.js'
 	const makeRow1 = cast('template', (ids,v,k) => {
 		console.log('ids1', ids)
 		ids.label.textContent = v.ms
@@ -55,7 +55,5 @@
 	data.push( {id:'2', ms:'two'} )
 	tbody1.update(data)
 	tbody2.update(data)
-	const squareSandbox = frame('x=>x*x')
-	squareSandbox.run(2).then( v => $`body`.append(tag`isFour: ${v}`) )
 </script>
 </html>
