@@ -19,15 +19,19 @@ export function frame(code, init='', attributes=ISMOD.test(init) ? 'type=module'
 	};window.${ uid }=(${ code }).bind(window)<\/script>`
 
 	// get the evaluated code
-	const framed = new Promise( (p,f) => {
-		iframeEl.onerror = f
+	return new Promise( (p,f) => {
+		iframeEl.onerror = e => {
+			f(e)
+			iframeEl.remove()
+		}
 		iframeEl.onload = () => {
 			const fcn = iframeEl.contentWindow[uid]
-			if (typeof fcn === 'function') p(fcn)
+			if (typeof fcn === 'function') {
+				fcn.remove = iframeEl.remove.bind(iframeEl)
+				p(fcn)
+			}
 			else f(new Error('not a function'))
 		}
 		document.body.appendChild(iframeEl)
 	})
-	framed.finally( () => iframeEl.remove() )
-	return framed
 }

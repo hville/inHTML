@@ -12,9 +12,9 @@ import {frame} from './browser.js'
 		- async and defer are unreliable
  */
 const ts = `
-const ts={js:document.readyState};
-onload=()=>ts.onload=document.readyState;
-document.addEventListener("DOMContentLoaded", ()=>ts.onDOM=document.readyState)`
+let ts='\\njs:'+document.readyState;
+onload=()=>(ts+='\\nonload:'+document.readyState);
+document.addEventListener("DOMContentLoaded", ()=>(ts+='\\nonDOM:'+document.readyState))`
 frame('()=>ts',ts,'').then(f => console.log('script',f()))
 frame('()=>ts',ts,'async').then(f => console.log('async',f()))
 frame('()=>ts',ts,'defer').then(f => console.log('defer',f()))
