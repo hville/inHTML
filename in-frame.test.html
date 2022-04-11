@@ -2,25 +2,40 @@
 <head></head>
 
 <script type=module>
-	import {frame} from './browser.js'
-	const plain = frame(`x=>x+2`),
-				closure = frame(`x=>x+y`, `const y=2`),
-				global = frame(`x=>x+y`, `window.y=2`),
-				this_ = frame(`function(x) { return x+this.y }`, `window.y=2`),
-				dom = frame(`x => +document.body.textContent+x`, `onload = () => document.body.textContent=2`),
-				batshit = frame(`async x => (await ff)(x)`, `import {frame} from './in-frame.js';
-				const ff = frame('x=>x+2')`)
+//TODO tests with events, async defer await module document XPath
+import {frame} from './browser.js'
 
-	async function test(msg,f,arg) {
-		//f.catch(e => console.log('!',e))
-		document.body.append(msg, await f(arg))
-	}
+//Timing
+/* Notes:
+		- document.readyState is missed with type=module async
+		- readyState is loading with scripts (no DOM) and interractive with module
+		- async and defer are unreliable
+ */
+const ts = `
+const ts={js:document.readyState};
+onload=()=>ts.onload=document.readyState;
+document.addEventListener("DOMContentLoaded", ()=>ts.onDOM=document.readyState)`
+frame('()=>ts',ts,'').then(f => console.log('script',f()))
+frame('()=>ts',ts,'async').then(f => console.log('async',f()))
+frame('()=>ts',ts,'defer').then(f => console.log('defer',f()))
+frame('()=>ts',ts,'async defer').then(f => console.log('async defer',f()))
+frame('()=>ts',ts,'type=module').then(f => console.log('type=module',f()))
+frame('()=>ts',ts,'type=module async').then(f => console.log('type=module async',f()))
 
-	test('plain', await plain, 1)
-	test('closure', await closure, 1)
-	test('global', await global, 1)
-	test('this_', await this_, 1)
-	test('dom', await dom, 1)
-	test('batshit', await batshit, 1)
+//Context
+async function test(msg,f) {
+	//f.catch(e => console.log('!',e))
+	document.body.append(await f(msg))
+}
+
+test('plain', await frame(`x=>x+'OK '`))
+test('closure', await frame(`x=>x+y`, `const y='OK '`))
+test('global', await frame(`x=>x+y`, `window.y='OK '`))
+test('this_', await frame(`function(x) { return x+this.y }`, `window.y='OK '`))
+test('dom', await frame(`x => x+document.body.textContent`, `onload = () => document.body.textContent='OK '`))
+test('frameInFrame', await frame(
+`async x => (await ff)(x)`,
+`import {frame} from './in-frame.js';
+const ff = frame('x=>x+"OK "')`))
 </script>
 </html>
