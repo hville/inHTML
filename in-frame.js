@@ -7,7 +7,7 @@ const ISMOD = /^[\s]*import[\s'"`*{;]/
  * @returns {Promise<function>}
  */
 export function frame(code, init='', attributes=ISMOD.test(init) ? 'type=module' : '') {
-	const uid = '_'+Math.floor(Math.random()*Number.MAX_SAFE_INTEGER).toString(36),
+	const uid = '$'+Math.floor(Math.random()*(2**(5*6))).toString(32).padStart(6,0),
 				iframeEl = document.createElement('iframe'),
 				{port1, port2} = new MessageChannel()
 
