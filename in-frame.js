@@ -15,9 +15,7 @@ export function frame(code, init='', attributes=ISMOD.test(init) ? 'type=module'
 	iframeEl.style.display = 'none'
 	iframeEl.sandbox = 'allow-scripts'
 	iframeEl.srcdoc = `<script ${ attributes}>${init}; onmessage = ({ports:[port2]}) => {
-	port2.onmessage = evt => {
-		port2.postMessage(window.${ uid }(...evt.data))
-	}
+		port2.onmessage = async evt => port2.postMessage(await window.${ uid }(...evt.data))
 };
 window.${ uid }=${ code };
 <\/script>`

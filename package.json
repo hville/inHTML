@@ -2,7 +2,7 @@
   "name": "@hugov/inhtml",
   "type": "module",
   "browser": "browser.js",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "small and simple in-html templates, factories and dynamic lists",
   "keywords": ["html", "template", "dom", "browser", "dynamic", "keyed", "list"],
   "author": "Hugo Villeneuve",
