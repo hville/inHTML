@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<div id=partial>partial div</div>
+<script type=module>
+	import {$, html} from './browser.js'
+	$`#partial`.append(html`<b><i>partial html+script from file</i></b>`)
+</script>
+</html>

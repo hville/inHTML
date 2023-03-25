@@ -1,3 +1,13 @@
+
+/*
+TODO Escape
+  https://html.spec.whatwg.org/multipage/named-characters.html#named-character-references
+	&	=> &amp;
+  <	=> &lt;
+  > => &gt;
+  " =>  &quot;
+*/
+
 /**
  * tagged template litteral tag`text` => 'text'
  * @param {Array} strings
@@ -35,9 +45,18 @@ export function $$(selector, parent=document) {
  * @returns {DocumentFragment}
  */
 export function html(txt) {
-	const T = document.createElement('template')
-	T.innerHTML = Array.isArray(txt) ? tag.apply(null, arguments) : txt
-	return T.content
+	return document.createRange().createContextualFragment(
+		Array.isArray(txt) ? tag.apply(null, arguments) : txt
+	)
+}
+
+/**
+ * load(`./text.html`)
+ * @param {string} txt
+ * @returns {Promise<DocumentFragment>}
+ */
+export function load(path) {
+	return fetch(path).then( res => res.text().then( txt => html( txt ) ) )
 }
 
 function getNode(selection) {
@@ -115,12 +134,3 @@ export function list(parent, factory, { getKey, after=null, before=null }={} ) {
 	}
 	return kin
 }
-
-/*
-TODO Escape
-  https://html.spec.whatwg.org/multipage/named-characters.html#named-character-references
-	&	=> &amp;
-  <	=> &lt;
-  > => &gt;
-  " =>  &quot;
-*/

@@ -31,7 +31,12 @@
 	</tr>
 </template>
 <script type=module>
-	import {tag, cast, list, $, $$} from './browser.js'
+	import {tag, cast, list, load, $, $$} from './browser.js'
+	load('./in-html-partial.html').then(fr => {
+		console.log(fr, typeof fr)
+		//document.body.appendChild(fr)
+		document.body.append('abc',fr)
+	})
 	const makeRow1 = cast('template', (ids,v,k) => {
 		console.log('ids1', ids)
 		ids.label.textContent = v.ms
