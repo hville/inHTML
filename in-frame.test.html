@@ -5,37 +5,34 @@
 //TODO tests with events, async defer await module document XPath
 import {frame} from './browser.js'
 
+const run = (f, ...args) => f(...args).then(r => {
+	console.log(r); document.body.append(r, document.createElement('br'))
+}).catch(e => {
+	console.log(e); document.body.append('!', e, document.createElement('br'))
+}).finally( () => f.remove() )
+
 //Timing
 /* Notes:
 		- document.readyState is missed with type=module async
 		- readyState is loading with scripts (no DOM) and interractive with module
 		- async and defer are unreliable
  */
-const ts = `
-let ts='\\njs:'+document.readyState;
-onload=()=>(ts+='\\nonload:'+document.readyState);
-document.addEventListener("DOMContentLoaded", ()=>(ts+='\\nonDOM:'+document.readyState))`
-frame('()=>ts',ts,'').then(f => console.log('script',f()))
-frame('()=>ts',ts,'async').then(f => console.log('async',f()))
-frame('()=>ts',ts,'defer').then(f => console.log('defer',f()))
-frame('()=>ts',ts,'async defer').then(f => console.log('async defer',f()))
-frame('()=>ts',ts,'type=module').then(f => console.log('type=module',f()))
-frame('()=>ts',ts,'type=module async').then(f => console.log('type=module async',f()))
+const context = `
+let ts='\\n  js:'+document.readyState+', ';
+onload=()=>(ts+='\\n  onload:'+document.readyState+', ');
+document.addEventListener("DOMContentLoaded", ()=>(ts+='\\n  onDOM:'+document.readyState+', '))`
 
-//Context
-async function test(msg,f) {
-	//f.catch(e => console.log('!',e))
-	document.body.append(await f(msg))
-}
+run( frame('m=>m.toUpperCase()+ts',{context, scriptAttributes:'type=module async'}), '1.type=module async')
+run( frame('m=>m.toUpperCase()+ts',{context, scriptAttributes:'type=module'}), '2.type=module')
+run( frame('m=>m.toUpperCase()+ts',{context, scriptAttributes:'async defer'}), '3.async defer')
+run( frame('m=>m.toUpperCase()+ts',{context, scriptAttributes:'async'}), '4.async')
+run( frame('m=>m.toUpperCase()+ts',{context, scriptAttributes:'defer'}), '5.defer')
+run( frame('m=>m.toUpperCase()+ts',{context}), '6.defaultAttribute')
+run( frame('m=>m.toUpperCase()+ts',{context, scriptAttributes:''}), '7.noAttributes')
+run( frame(`x => ff(x)`, { context: `import {frame} from './in-frame.js'; const ff = frame( x=>'8. nested_'+x.toUpperCase())` }), 'frameInFrame' )
+const transfer1 = arr => [arr.buffer],
+			transfer2 = transfer1
+run( frame(`a => new Float64Array( a.buffer, 8, 1 )`, { transfer1, transfer2 }), new Float64Array( new Float64Array(2).fill(9).buffer, 0, 1 ).fill(Infinity) )
 
-test('plain', await frame(`x=>x+'OK '`))
-test('closure', await frame(`x=>x+y`, `const y='OK '`))
-test('global', await frame(`x=>x+y`, `window.y='OK '`))
-test('this_', await frame(`function(x) { return x+this.y }`, `window.y='OK '`))
-test('dom', await frame(`x => x+document.body.textContent`, `onload = () => document.body.textContent='OK '`))
-test('frameInFrame', await frame(
-`async x => (await ff)(x)`,
-`import {frame} from './in-frame.js';
-const ff = frame('x=>x+"OK "')`))
 </script>
 </html>
