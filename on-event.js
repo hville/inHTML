@@ -1,18 +1,18 @@
 /**
- * EVENT DELEGATION
- * TODO not tested or documented
- * event('type') --> listens to 'type' --> target.onType(e) --> target.parentNode.onType(e)
+ * Event Delegation
+ * listens to 'onEvent' insteat of 'onevent'
+ * TODO: test & document
  */
-const DELEGATES = {}
+const onAlias = {} // event:onEvent
 export function delegate(eventType) {
-	if (!DELEGATES[eventType]) {
-		DELEGATES[eventType] = 'on' + eventType[0].toUpperCase() + eventType.slice(1)
+	if (!onAlias[eventType]) { // only once per type, D.event = 'onEvent'
+		onAlias[eventType] = 'on' + eventType[0].toUpperCase() + eventType.slice(1)
 		document.addEventListener(eventType, listener)
 	}
 }
 function listener(event) {
 	let tgt = event.target,
-			evt = DELEGATES[event.type]
-	do if (tgt[evt]) return tgt[evt](e)
+			onE = onAlias[event.type]
+	do if (tgt[onE]) return tgt[onE](e)
 	while(tgt = tgt.parentNode)
 }

@@ -3,7 +3,7 @@
 
 <script type=module>
 //TODO tests with events, async defer await module document XPath
-import {frame} from './browser.js'
+import {frame} from '../browser.js'
 
 const run = (f, ...args) => f(...args).then(r => {
 	console.log(r); document.body.append(r, document.createElement('br'))
@@ -29,7 +29,7 @@ run( frame('m=>m.toUpperCase()+ts',{context, scriptAttributes:'async'}), '4.asyn
 run( frame('m=>m.toUpperCase()+ts',{context, scriptAttributes:'defer'}), '5.defer')
 run( frame('m=>m.toUpperCase()+ts',{context}), '6.defaultAttribute')
 run( frame('m=>m.toUpperCase()+ts',{context, scriptAttributes:''}), '7.noAttributes')
-run( frame(`x => ff(x)`, { context: `import {frame} from './in-frame.js'; const ff = frame( x=>'8. nested_'+x.toUpperCase())` }), 'frameInFrame' )
+run( frame(`x => ff(x)`, { context: `import {frame} from '../frame.js'; const ff = frame( x=>'8. nested_'+x.toUpperCase())` }), 'frameInFrame' )
 const transfer1 = arr => [arr.buffer],
 			transfer2 = transfer1
 run( frame(`a => new Float64Array( a.buffer, 8, 1 )`, { transfer1, transfer2 }), new Float64Array( new Float64Array(2).fill(9).buffer, 0, 1 ).fill(Infinity) )

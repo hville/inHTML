@@ -72,7 +72,6 @@ function $ids(el) {
 }
 
 /**
- *
  * @param {string|Element|DocumentFragment} template
  * @param {Function} decorator
  * @returns {Function}
@@ -88,7 +87,6 @@ export function cast(template, decorator) {
 }
 
 /**
- *
  * @param {string|Element|DocumentFragment} parent
  * @param {Function} factory
  * @param {Object} param2

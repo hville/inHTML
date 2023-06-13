@@ -44,12 +44,22 @@
 
 ## API
 
-* `cast( source, decorator ): nodeFactory`
+* `cast( source, decorator ) => nodeFactory`
   * source: node or selector
   * decorator: (ids, ...args) => node|void, ids are striped from the clone's :id attribute
   * nodeFactory: (,,,args) => decorated clone
-* `list( parent, childFactory, options): parent`
+* `list( parent, childFactory, options) => parent`
   * adds parent.update(value, key) method to the parent
+
+## Helper functions and utils
+
+* tag`text` => `text`
+* $(selector, parent=document) | $`selector` : `querySelector` shortcut
+* $$(selector, parent=document) | $$`selector` : `querySelectorAll` shortcut
+* html(markup) | html`markup` => DocumentFragment
+* load(path) => DocumentFragment
+* frame(lambda, {context}) => sandboxed AsyncFunction
+* worker(code) => Worker
 
 ## License
 

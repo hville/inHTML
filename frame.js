@@ -1,14 +1,10 @@
-const ISMOD = /^[\s]*import[\s'"`*{;]/
 /**
- * create a function that runs in an iframe
- * frame( init, a => {data:a, transfer:[a.buffer]})({data:b, transfer:[b.buffer]}).then( r => console.log(r) )
- * frame( init, a => a)(b).then( r => console.log(r) )
- *
+ * create a sandboxed function that runs in an iframe
  * @param {string|Function} lambda for the iframe exported function
  * @param {{context:string, scriptAttributes:string, transfer1:string|Function, transfer2:string|Function}} options
  * @returns { * => Promise<*> }
  */
-export function frame(lambda,	{context='', transfer1, transfer2, scriptAttributes = ISMOD.test(context) ? 'type=module' : ''}={}) {
+export function frame(lambda,	{context='', transfer1, transfer2, scriptAttributes = 'type=module'}={}) {
 	const uid = '$'+Math.floor(Math.random()*(2**(5*6))).toString(32).padStart(6,0),
 				iframeEl = document.createElement('iframe'),
 				{port1, port2} = new MessageChannel()
